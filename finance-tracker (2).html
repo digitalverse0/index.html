@@ -1,0 +1,2519 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تتبع مصاريفك الشهرية - إدارة ذكية للراتب</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Primary Palette - Elegant & Trustworthy */
+            --primary-dark: #1a2332;
+            --primary-deep: #0f1821;
+            --accent-teal: #14b8a6;
+            --accent-emerald: #10b981;
+            --accent-amber: #f59e0b;
+            --accent-rose: #f43f5e;
+            
+            /* Glass Colors */
+            --glass-white: rgba(255, 255, 255, 0.1);
+            --glass-white-hover: rgba(255, 255, 255, 0.15);
+            --glass-dark: rgba(15, 24, 33, 0.6);
+            
+            /* Semantic Colors */
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #f43f5e;
+            --info: #14b8a6;
+            
+            /* Text */
+            --text-light: #f8fafc;
+            --text-muted: #94a3b8;
+            --text-dark: #1e293b;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+            min-height: 100vh;
+            color: var(--text-light);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(20, 184, 166, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(16, 185, 129, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(245, 158, 11, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+            animation: bgShift 15s ease-in-out infinite;
+            z-index: 0;
+        }
+
+        @keyframes bgShift {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.1); }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Glass Card */
+        .glass-card {
+            background: var(--glass-white);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 24px;
+            padding: 1.5rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 48px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Header */
+        header {
+            margin-bottom: 2rem;
+            text-align: center;
+            animation: fadeInDown 0.6s ease;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .logo {
+            font-family: 'Cairo', sans-serif;
+            font-size: 2rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--accent-teal), var(--accent-emerald));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            display: inline-block;
+        }
+
+        .tagline {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-weight: 300;
+        }
+
+        /* Main Balance Card */
+        .balance-card {
+            background: linear-gradient(135deg, rgba(20, 184, 166, 0.2), rgba(16, 185, 129, 0.15));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(20, 184, 166, 0.3);
+            border-radius: 28px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            animation: fadeIn 0.8s ease 0.2s both;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .balance-label {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+            font-weight: 300;
+        }
+
+        .balance-amount {
+            font-family: 'Cairo', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #fff, var(--accent-teal));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            line-height: 1;
+        }
+
+        .balance-subtitle {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .action-btn {
+            background: var(--glass-white);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 1.5rem 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            color: var(--text-light);
+            font-family: 'Tajawal', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 500;
+            animation: fadeIn 0.8s ease both;
+        }
+
+        .action-btn:nth-child(1) { animation-delay: 0.3s; }
+        .action-btn:nth-child(2) { animation-delay: 0.4s; }
+        .action-btn:nth-child(3) { animation-delay: 0.5s; }
+        .action-btn:nth-child(4) { animation-delay: 0.6s; }
+
+        .action-btn:hover {
+            background: var(--glass-white-hover);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+            border-color: var(--accent-teal);
+        }
+
+        .action-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        /* Budget Categories */
+        .budget-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .budget-item {
+            animation: fadeIn 0.8s ease both;
+        }
+
+        .budget-item:nth-child(1) { animation-delay: 0.7s; }
+        .budget-item:nth-child(2) { animation-delay: 0.8s; }
+        .budget-item:nth-child(3) { animation-delay: 0.9s; }
+
+        .budget-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .budget-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .budget-percentage {
+            font-size: 1.5rem;
+            font-weight: 700;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .progress-bar {
+            height: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 0.75rem;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 20px;
+            transition: width 1s ease, background 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .budget-details {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+        }
+
+        .budget-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-edit, .btn-delete {
+            flex: 1;
+            padding: 0.6rem;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-edit {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--accent-amber);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .btn-edit:hover {
+            background: rgba(245, 158, 11, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .btn-delete {
+            background: rgba(244, 63, 94, 0.2);
+            color: var(--accent-rose);
+            border: 1px solid rgba(244, 63, 94, 0.3);
+        }
+
+        .btn-delete:hover {
+            background: rgba(244, 63, 94, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .status-good { 
+            background: linear-gradient(90deg, var(--success), rgba(16, 185, 129, 0.7));
+        }
+        .status-warning { 
+            background: linear-gradient(90deg, var(--warning), rgba(245, 158, 11, 0.7));
+        }
+        .status-danger { 
+            background: linear-gradient(90deg, var(--danger), rgba(244, 63, 94, 0.7));
+        }
+
+        /* Tab Navigation */
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            background: var(--glass-white);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 0.5rem;
+            animation: fadeIn 0.8s ease 1s both;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 1rem;
+            background: transparent;
+            border: none;
+            border-radius: 16px;
+            color: var(--text-muted);
+            font-family: 'Tajawal', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, var(--accent-teal), var(--accent-emerald));
+            color: white;
+            box-shadow: 0 4px 16px rgba(20, 184, 166, 0.4);
+        }
+
+        .tab:hover:not(.active) {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-light);
+        }
+
+        /* Content Sections */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: var(--text-light);
+            font-family: 'Tajawal', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--accent-teal);
+            box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.1);
+        }
+
+        /* Fix dropdown options visibility */
+        .form-select option {
+            background: var(--primary-dark);
+            color: var(--text-light);
+            padding: 0.5rem;
+        }
+
+        .form-select option:checked {
+            background: var(--accent-teal);
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-teal), var(--accent-emerald));
+            color: white;
+            box-shadow: 0 4px 16px rgba(20, 184, 166, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(20, 184, 166, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        /* Category Field Group */
+        .category-field-group {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            align-items: end;
+        }
+
+        .category-field-group .form-group {
+            margin-bottom: 0;
+            flex: 1;
+        }
+
+        .remove-category-btn {
+            padding: 1rem;
+            background: rgba(244, 63, 94, 0.2);
+            border: 1px solid rgba(244, 63, 94, 0.3);
+            color: var(--accent-rose);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .remove-category-btn:hover {
+            background: rgba(244, 63, 94, 0.3);
+            transform: scale(1.05);
+        }
+
+        /* Expense List */
+        .expense-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .expense-item {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .expense-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .expense-info h4 {
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .expense-date {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .expense-amount {
+            font-family: 'Cairo', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .expense-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-right: 1rem;
+        }
+
+        .icon-btn {
+            width: 32px;
+            height: 32px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        .icon-btn-edit {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--accent-amber);
+        }
+
+        .icon-btn-edit:hover {
+            background: rgba(245, 158, 11, 0.3);
+            transform: scale(1.1);
+        }
+
+        .icon-btn-delete {
+            background: rgba(244, 63, 94, 0.2);
+            color: var(--accent-rose);
+        }
+
+        .icon-btn-delete:hover {
+            background: rgba(244, 63, 94, 0.3);
+            transform: scale(1.1);
+        }
+
+        /* Goals */
+        .goal-card {
+            margin-bottom: 1.5rem;
+        }
+
+        .goal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+
+        .goal-info h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .goal-target {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .goal-stats {
+            text-align: left;
+        }
+
+        .goal-saved {
+            font-family: 'Cairo', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent-teal);
+        }
+
+        .goal-remaining {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--glass-white);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-family: 'Cairo', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* Achievement Badge */
+        .achievement {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 16px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .achievement-icon {
+            font-size: 2.5rem;
+        }
+
+        .achievement-text h4 {
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .achievement-desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .logo {
+                font-size: 1.5rem;
+            }
+
+            .balance-amount {
+                font-size: 2.5rem;
+            }
+
+            .quick-actions {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .budget-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tabs {
+                flex-wrap: wrap;
+            }
+
+            .tab {
+                font-size: 0.85rem;
+                padding: 0.75rem 0.5rem;
+            }
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .modal.active {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background: var(--primary-dark);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 24px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .close-modal {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            color: var(--text-light);
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .close-modal:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(90deg);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text-muted);
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .empty-text {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-subtext {
+            font-size: 0.9rem;
+        }
+
+        /* Budget Warning */
+        .budget-warning {
+            margin-top: 0.75rem;
+            padding: 0.75rem;
+            background: rgba(244, 63, 94, 0.15);
+            border: 1px solid rgba(244, 63, 94, 0.4);
+            border-radius: 10px;
+            font-size: 0.85rem;
+            color: var(--accent-rose);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        /* Debt Card */
+        .debt-card {
+            background: rgba(168, 85, 247, 0.1);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .debt-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+
+        .debt-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .debt-creditor {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .debt-amount {
+            font-family: 'Cairo', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #a855f7;
+        }
+
+        .debt-paid {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        /* Savings Card */
+        .savings-card {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(20, 184, 166, 0.15));
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 24px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .savings-breakdown {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            font-size: 0.9rem;
+        }
+
+        .savings-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .savings-item:last-child {
+            border-bottom: none;
+        }
+
+        .savings-label {
+            color: var(--text-muted);
+        }
+
+        .savings-value {
+            font-weight: 600;
+            color: var(--accent-emerald);
+        }
+
+        /* Surplus Funds Card */
+        .surplus-card {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(251, 191, 36, 0.15));
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 24px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        /* Confirmation Dialog */
+        .confirmation-dialog {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            left: 2rem;
+            max-width: 400px;
+            margin: 0 auto;
+            background: var(--primary-dark);
+            border: 2px solid var(--accent-amber);
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            animation: slideUpBounce 0.4s ease;
+            display: none;
+        }
+
+        .confirmation-dialog.active {
+            display: block;
+        }
+
+        @keyframes slideUpBounce {
+            0% { transform: translateY(100px); opacity: 0; }
+            60% { transform: translateY(-10px); opacity: 1; }
+            100% { transform: translateY(0); }
+        }
+
+        .confirmation-dialog h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.75rem;
+            color: var(--accent-amber);
+        }
+
+        .confirmation-dialog p {
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+            color: var(--text-muted);
+        }
+
+        .confirmation-buttons {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .btn-confirm {
+            flex: 1;
+            padding: 0.75rem;
+            background: linear-gradient(135deg, var(--accent-emerald), var(--accent-teal));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Tajawal', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-confirm:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-cancel {
+            flex: 1;
+            padding: 0.75rem;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            font-family: 'Tajawal', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-cancel:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <h1 class="logo">تتبع مصاريفك الشهرية</h1>
+            <p class="tagline">أداتك الذكية للسيطرة على راتبك 💰</p>
+        </header>
+
+        <!-- Main Balance -->
+        <div class="balance-card">
+            <div class="balance-label">الرصيد المتبقي من راتبك</div>
+            <div class="balance-amount" id="remainingBalance">0 دج</div>
+            <div class="balance-subtitle">من أصل <span id="totalSalary">0 دج</span> هذا الشهر</div>
+        </div>
+
+        <!-- Savings Card -->
+        <div class="savings-card" id="savingsCard" style="display: none;">
+            <div style="text-align: center;">
+                <div class="balance-label">إجمالي الادخار هذا الشهر</div>
+                <div class="balance-amount" style="font-size: 2.5rem;" id="totalSavingsAmount">0 دج</div>
+            </div>
+            <div class="savings-breakdown" id="savingsBreakdown">
+                <!-- Savings breakdown will appear here -->
+            </div>
+        </div>
+
+        <!-- Surplus Funds Card -->
+        <div class="surplus-card" id="surplusCard" style="display: none;">
+            <div class="balance-label">المبالغ الفاضلة من الميزانيات</div>
+            <div class="balance-amount" style="font-size: 2.5rem; background: linear-gradient(135deg, #f59e0b, #fbbf24); -webkit-background-clip: text; -webkit-text-fill-color: transparent;" id="surplusFundsAmount">0 دج</div>
+            <div class="balance-subtitle">متاحة لتغطية أي تجاوز في الميزانيات</div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <button class="action-btn" onclick="openModal('addExpense')">
+                <span class="action-icon">➕</span>
+                إضافة مصروف
+            </button>
+            <button class="action-btn" onclick="openModal('setBudget')">
+                <span class="action-icon">🎯</span>
+                تحديد ميزانية
+            </button>
+            <button class="action-btn" onclick="openModal('addDebt')">
+                <span class="action-icon">💳</span>
+                إضافة دين
+            </button>
+            <button class="action-btn" onclick="openModal('addGoal')">
+                <span class="action-icon">🏆</span>
+                هدف جديد
+            </button>
+            <button class="action-btn" onclick="openModal('addSavings')">
+                <span class="action-icon">💰</span>
+                إضافة ادخار
+            </button>
+        </div>
+
+        <!-- Budget Overview -->
+        <div class="glass-card">
+            <h2 style="margin-bottom: 1.5rem; font-size: 1.3rem;">نظرة على ميزانياتك</h2>
+            <div class="budget-grid" id="budgetGrid">
+                <!-- Budget items will be inserted here -->
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('expenses')">المصاريف</button>
+            <button class="tab" onclick="switchTab('debts')">الديون</button>
+            <button class="tab" onclick="switchTab('goals')">الأهداف</button>
+            <button class="tab" onclick="switchTab('analytics')">التحليلات</button>
+            <button class="tab" onclick="switchTab('achievements')">الإنجازات</button>
+        </div>
+
+        <!-- Expenses Tab -->
+        <div id="expenses" class="tab-content active">
+            <div class="glass-card">
+                <h2 style="margin-bottom: 1.5rem; font-size: 1.3rem;">آخر المصاريف</h2>
+                <div class="expense-list" id="expenseList">
+                    <!-- Expenses will be listed here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Debts Tab -->
+        <div id="debts" class="tab-content">
+            <div class="glass-card">
+                <h2 style="margin-bottom: 1.5rem; font-size: 1.3rem;">الديون والقروض 💳</h2>
+                <div id="debtsList">
+                    <!-- Debts will be listed here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Goals Tab -->
+        <div id="goals" class="tab-content">
+            <div class="glass-card">
+                <h2 style="margin-bottom: 1.5rem; font-size: 1.3rem;">أهدافي المالية</h2>
+                <div id="goalsList">
+                    <!-- Goals will be listed here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Analytics Tab -->
+        <div id="analytics" class="tab-content">
+            <div class="glass-card">
+                <h2 style="margin-bottom: 1.5rem; font-size: 1.3rem;">التحليلات والإحصائيات</h2>
+                <div class="stats-grid" id="statsGrid">
+                    <!-- Stats will be shown here -->
+                </div>
+                <canvas id="expenseChart" style="max-height: 300px; margin-top: 2rem;"></canvas>
+            </div>
+        </div>
+
+        <!-- Achievements Tab -->
+        <div id="achievements" class="tab-content">
+            <div class="glass-card">
+                <h2 style="margin-bottom: 1.5rem; font-size: 1.3rem;">إنجازاتك 🎉</h2>
+                <div id="achievementsList">
+                    <!-- Achievements will be shown here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Dialog for Surplus Use -->
+    <div id="surplusConfirmDialog" class="confirmation-dialog">
+        <h4>💰 استخدام المبالغ الفاضلة؟</h4>
+        <p id="surplusConfirmMessage">لديك مبلغ فاضل، هل تريد استخدامه لتغطية التجاوز؟</p>
+        <div class="confirmation-buttons">
+            <button class="btn-confirm" onclick="confirmSurplusUse()">نعم، استخدمه</button>
+            <button class="btn-cancel" onclick="cancelSurplusUse()">لا، شكراً</button>
+        </div>
+    </div>
+
+    <!-- Set Budget Modal -->
+    <div id="setBudgetModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">تحديد الميزانيات</h3>
+                <button class="close-modal" onclick="closeModal('setBudget')">×</button>
+            </div>
+            <form id="budgetForm" onsubmit="setBudget(event)">
+                <div class="form-group">
+                    <label class="form-label">راتبك الشهري (دج)</label>
+                    <input type="number" class="form-input" id="monthlySalary" placeholder="50000" min="1" required>
+                </div>
+                
+                <h4 style="margin: 1.5rem 0 1rem; font-size: 1rem;">أضف فئات الميزانية الخاصة بك:</h4>
+                <div id="customCategoriesContainer"></div>
+                
+                <button type="button" class="btn btn-secondary" onclick="addCategoryField()" style="width: 100%; margin-bottom: 1rem;">
+                    ➕ إضافة فئة جديدة
+                </button>
+                
+                <button type="submit" class="btn btn-primary" style="width: 100%;">حفظ الميزانيات</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Expense Modal -->
+    <div id="addExpenseModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">إضافة مصروف جديد</h3>
+                <button class="close-modal" onclick="closeModal('addExpense')">×</button>
+            </div>
+            <form id="expenseForm" onsubmit="addExpense(event)">
+                <div class="form-group">
+                    <label class="form-label">الفئة</label>
+                    <select class="form-select" id="expenseCategory" required>
+                        <option value="">اختر الفئة</option>
+                        <!-- Categories will be populated dynamically -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">الوصف</label>
+                    <input type="text" class="form-input" id="expenseDescription" placeholder="مثال: حاجيات المنزل" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">المبلغ (دج)</label>
+                    <input type="number" class="form-input" id="expenseAmount" placeholder="2500" min="1" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">التاريخ</label>
+                    <input type="date" class="form-input" id="expenseDate" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">إضافة المصروف</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Goal Modal -->
+    <div id="addGoalModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">إضافة هدف مالي</h3>
+                <button class="close-modal" onclick="closeModal('addGoal')">×</button>
+            </div>
+            <form id="goalForm" onsubmit="addGoal(event)">
+                <div class="form-group">
+                    <label class="form-label">اسم الهدف</label>
+                    <input type="text" class="form-input" id="goalName" placeholder="مثال: شراء حاسوب جديد" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">المبلغ المطلوب (دج)</label>
+                    <input type="number" class="form-input" id="goalAmount" placeholder="150000" min="1" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">المدة المستهدفة (بالأشهر)</label>
+                    <input type="number" class="form-input" id="goalMonths" placeholder="12" min="1" required>
+                </div>
+                <div id="goalCalculation" style="background: rgba(20, 184, 166, 0.1); padding: 1rem; border-radius: 12px; margin: 1rem 0; display: none;">
+                    <p style="margin-bottom: 0.5rem;">💡 للوصول لهدفك:</p>
+                    <p style="font-size: 1.1rem; font-weight: 600;">يجب عليك ادخار <span id="monthlySavingNeeded" style="color: var(--accent-teal);">0 دج</span> كل شهر</p>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">إضافة الهدف</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Debt Modal -->
+    <div id="addDebtModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">إضافة دين أو قرض</h3>
+                <button class="close-modal" onclick="closeModal('addDebt')">×</button>
+            </div>
+            <form id="debtForm" onsubmit="addDebt(event)">
+                <div class="form-group">
+                    <label class="form-label">اسم الدائن (الشخص أو الجهة)</label>
+                    <input type="text" class="form-input" id="debtCreditor" placeholder="مثال: البنك، صديق، شركة..." required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">المبلغ الإجمالي (دج)</label>
+                    <input type="number" class="form-input" id="debtAmount" placeholder="50000" min="1" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">ملاحظات (اختياري)</label>
+                    <input type="text" class="form-input" id="debtNotes" placeholder="مثال: قرض سيارة، قسط شهري 5000 دج">
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">إضافة الدين</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Pay Debt Modal -->
+    <div id="payDebtModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">دفع جزء من الدين</h3>
+                <button class="close-modal" onclick="closeModal('payDebt')">×</button>
+            </div>
+            <form id="payDebtForm" onsubmit="payDebt(event)">
+                <input type="hidden" id="payDebtId">
+                <div class="form-group">
+                    <label class="form-label">المبلغ المدفوع (دج)</label>
+                    <input type="number" class="form-input" id="payDebtAmount" placeholder="5000" min="1" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">تسجيل الدفعة</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Savings Modal -->
+    <div id="addSavingsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">إضافة مبلغ للادخار</h3>
+                <button class="close-modal" onclick="closeModal('addSavings')">×</button>
+            </div>
+            <form id="savingsForm" onsubmit="addSavings(event)">
+                <div class="form-group">
+                    <label class="form-label">المبلغ المدخر (دج)</label>
+                    <input type="number" class="form-input" id="savingsAmount" placeholder="10000" min="1" required>
+                </div>
+                <div id="savingsDistribution" style="background: rgba(20, 184, 166, 0.1); padding: 1rem; border-radius: 12px; margin: 1rem 0;">
+                    <h4 style="font-size: 0.95rem; margin-bottom: 0.75rem;">📊 توزيع الادخار التلقائي:</h4>
+                    <div id="savingsDistributionContent">
+                        <!-- Distribution will be shown here -->
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">تأكيد الادخار</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add to Goal Modal -->
+    <div id="addToGoalModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">إضافة مبلغ للهدف</h3>
+                <button class="close-modal" onclick="closeModal('addToGoal')">×</button>
+            </div>
+            <form id="addToGoalForm" onsubmit="addToGoal(event)">
+                <input type="hidden" id="addToGoalId">
+                <div class="form-group">
+                    <label class="form-label">المبلغ المضاف (دج)</label>
+                    <input type="number" class="form-input" id="addToGoalAmount" placeholder="7500" min="1" required>
+                </div>
+                <div id="goalRemainingInfo" style="background: rgba(20, 184, 166, 0.1); padding: 1rem; border-radius: 12px; margin: 1rem 0; font-size: 0.9rem; color: var(--text-muted);">
+                    <!-- Goal info will be shown here -->
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">إضافة للهدف</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        // Data Storage
+        let appData = {
+            salary: 0,
+            budgets: {},
+            expenses: [],
+            goals: [],
+            debts: [],
+            savingsHistory: [],
+            totalSavings: 0,
+            surplusFunds: 0, // المبالغ الفاضلة من الميزانيات
+            categoryCounter: 0
+        };
+
+        // Current editing states
+        let editingBudgetCategory = null;
+        let editingExpenseId = null;
+        let currentPayingDebtId = null;
+        let currentOverBudgetCategory = null;
+
+        // Load data from localStorage
+        function loadData() {
+            const saved = localStorage.getItem('financeTrackerData');
+            if (saved) {
+                appData = JSON.parse(saved);
+                updateUI();
+                populateCategorySelect();
+            } else {
+                showEmptyState();
+            }
+        }
+
+        // Save data to localStorage
+        function saveData() {
+            localStorage.setItem('financeTrackerData', JSON.stringify(appData));
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadData();
+            
+            // Set today's date as default
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('expenseDate').value = today;
+
+            // Calculate goal savings on input
+            const goalAmountInput = document.getElementById('goalAmount');
+            const goalMonthsInput = document.getElementById('goalMonths');
+            
+            [goalAmountInput, goalMonthsInput].forEach(input => {
+                input.addEventListener('input', calculateGoalSavings);
+            });
+
+            // Calculate savings distribution on input
+            const savingsAmountInput = document.getElementById('savingsAmount');
+            if (savingsAmountInput) {
+                savingsAmountInput.addEventListener('input', calculateSavingsDistribution);
+            }
+
+            // Initialize with one category field
+            if (Object.keys(appData.budgets).length === 0) {
+                addCategoryField();
+            }
+        });
+
+        // Add Category Field to Budget Form
+        function addCategoryField(name = '', amount = '') {
+            const container = document.getElementById('customCategoriesContainer');
+            const fieldId = `category-${appData.categoryCounter++}`;
+            
+            const fieldGroup = document.createElement('div');
+            fieldGroup.className = 'category-field-group';
+            fieldGroup.id = fieldId;
+            
+            fieldGroup.innerHTML = `
+                <div class="form-group" style="flex: 1.5;">
+                    <label class="form-label">اسم الفئة</label>
+                    <input type="text" class="form-input category-name" placeholder="مثال: طعام، نقل، فواتير..." value="${name}" required>
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label class="form-label">الميزانية (دج)</label>
+                    <input type="number" class="form-input category-amount" placeholder="5000" min="1" value="${amount}" required>
+                </div>
+                <button type="button" class="remove-category-btn" onclick="removeCategoryField('${fieldId}')">
+                    ✕
+                </button>
+            `;
+            
+            container.appendChild(fieldGroup);
+        }
+
+        // Remove Category Field
+        function removeCategoryField(fieldId) {
+            const field = document.getElementById(fieldId);
+            if (field) {
+                field.remove();
+            }
+        }
+
+        // Populate Category Select in Expense Form
+        function populateCategorySelect() {
+            const select = document.getElementById('expenseCategory');
+            select.innerHTML = '<option value="">اختر الفئة</option>';
+            
+            Object.keys(appData.budgets).forEach(category => {
+                const option = document.createElement('option');
+                option.value = category;
+                option.textContent = category;
+                select.appendChild(option);
+            });
+        }
+
+        // Tab Switching
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+
+            // Update analytics if analytics tab
+            if (tabName === 'analytics') {
+                updateAnalytics();
+            }
+        }
+
+        // Modal Functions
+        function openModal(modalName) {
+            const modalId = modalName + 'Modal';
+            
+            // If opening budget modal, populate existing budgets
+            if (modalName === 'setBudget') {
+                const container = document.getElementById('customCategoriesContainer');
+                container.innerHTML = '';
+                
+                if (Object.keys(appData.budgets).length > 0) {
+                    Object.entries(appData.budgets).forEach(([name, budget]) => {
+                        addCategoryField(name, budget.total);
+                    });
+                    document.getElementById('monthlySalary').value = appData.salary || '';
+                } else {
+                    addCategoryField();
+                }
+            }
+            
+            // If opening savings modal, calculate distribution
+            if (modalName === 'addSavings') {
+                calculateSavingsDistribution();
+            }
+            
+            document.getElementById(modalId).classList.add('active');
+        }
+
+        function closeModal(modalName) {
+            const modalId = modalName + 'Modal';
+            document.getElementById(modalId).classList.remove('active');
+            
+            // Reset editing states
+            editingBudgetCategory = null;
+            editingExpenseId = null;
+        }
+
+        // Close modal on outside click
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.classList.remove('active');
+            }
+        }
+
+        // Set Budget
+        function setBudget(e) {
+            e.preventDefault();
+            
+            appData.salary = parseFloat(document.getElementById('monthlySalary').value);
+            
+            // Collect all categories
+            const categoryFields = document.querySelectorAll('.category-field-group');
+            const newBudgets = {};
+            
+            categoryFields.forEach(field => {
+                const name = field.querySelector('.category-name').value.trim();
+                const amount = parseFloat(field.querySelector('.category-amount').value);
+                
+                if (name && amount > 0) {
+                    // Preserve spent amount if category already exists
+                    const spent = appData.budgets[name] ? appData.budgets[name].spent : 0;
+                    newBudgets[name] = {
+                        total: amount,
+                        spent: spent
+                    };
+                }
+            });
+            
+            appData.budgets = newBudgets;
+
+            saveData();
+            updateUI();
+            populateCategorySelect();
+            closeModal('setBudget');
+            
+            showNotification('تم حفظ الميزانيات بنجاح! ✅');
+        }
+
+        // Edit Budget
+        function editBudget(category) {
+            editingBudgetCategory = category;
+            openModal('setBudget');
+        }
+
+        // Delete Budget
+        function deleteBudget(category) {
+            if (confirm(`هل أنت متأكد من حذف ميزانية "${category}"؟\nسيتم حذف جميع المصاريف المرتبطة بها أيضاً.`)) {
+                // Remove budget
+                delete appData.budgets[category];
+                
+                // Remove related expenses
+                appData.expenses = appData.expenses.filter(exp => exp.category !== category);
+                
+                saveData();
+                updateUI();
+                populateCategorySelect();
+                showNotification(`تم حذف "${category}" بنجاح! ❌`);
+            }
+        }
+
+        // Add Expense
+        function addExpense(e) {
+            e.preventDefault();
+            
+            const expense = {
+                id: editingExpenseId || Date.now(),
+                category: document.getElementById('expenseCategory').value,
+                description: document.getElementById('expenseDescription').value,
+                amount: parseFloat(document.getElementById('expenseAmount').value),
+                date: document.getElementById('expenseDate').value
+            };
+
+            if (editingExpenseId) {
+                // Update existing expense
+                const index = appData.expenses.findIndex(e => e.id === editingExpenseId);
+                const oldExpense = appData.expenses[index];
+                
+                // Update budget spent
+                if (appData.budgets[oldExpense.category]) {
+                    appData.budgets[oldExpense.category].spent -= oldExpense.amount;
+                }
+                if (appData.budgets[expense.category]) {
+                    appData.budgets[expense.category].spent += expense.amount;
+                }
+                
+                appData.expenses[index] = expense;
+                showNotification('تم تعديل المصروف بنجاح! ✅');
+            } else {
+                // Add new expense
+                appData.expenses.push(expense);
+                
+                // Update budget spending
+                if (appData.budgets[expense.category]) {
+                    const budget = appData.budgets[expense.category];
+                    budget.spent += expense.amount;
+                    
+                    // Check if over budget
+                    if (budget.spent > budget.total && appData.surplusFunds > 0) {
+                        const overAmount = budget.spent - budget.total;
+                        currentOverBudgetCategory = expense.category;
+                        showSurplusConfirmation(expense.category, overAmount);
+                    }
+                }
+                
+                showNotification('تم إضافة المصروف بنجاح! ✅');
+                checkAchievements();
+            }
+
+            // Calculate surplus funds
+            calculateSurplusFunds();
+
+            saveData();
+            updateUI();
+            closeModal('addExpense');
+            
+            // Reset form
+            document.getElementById('expenseForm').reset();
+            document.getElementById('expenseDate').value = new Date().toISOString().split('T')[0];
+            editingExpenseId = null;
+        }
+
+        // Calculate Surplus Funds
+        function calculateSurplusFunds() {
+            let totalSurplus = 0;
+            
+            Object.entries(appData.budgets).forEach(([category, budget]) => {
+                if (budget.spent < budget.total) {
+                    totalSurplus += (budget.total - budget.spent);
+                }
+            });
+            
+            appData.surplusFunds = totalSurplus;
+        }
+
+        // Show Surplus Confirmation Dialog
+        function showSurplusConfirmation(category, overAmount) {
+            const dialog = document.getElementById('surplusConfirmDialog');
+            const available = Math.min(appData.surplusFunds, overAmount);
+            
+            document.getElementById('surplusConfirmMessage').textContent = 
+                `تجاوزت ميزانية "${category}" بمقدار ${overAmount.toLocaleString()} دج. لديك ${available.toLocaleString()} دج متاح من المبالغ الفاضلة. هل تريد استخدامه؟`;
+            
+            dialog.classList.add('active');
+        }
+
+        // Confirm Surplus Use
+        function confirmSurplusUse() {
+            const category = currentOverBudgetCategory;
+            const budget = appData.budgets[category];
+            const overAmount = budget.spent - budget.total;
+            const toUse = Math.min(appData.surplusFunds, overAmount);
+            
+            // Cover the over amount
+            budget.total += toUse;
+            appData.surplusFunds -= toUse;
+            
+            saveData();
+            updateUI();
+            
+            document.getElementById('surplusConfirmDialog').classList.remove('active');
+            showNotification(`تم تغطية ${toUse.toLocaleString()} دج من المبالغ الفاضلة! ✅`);
+            
+            currentOverBudgetCategory = null;
+        }
+
+        // Cancel Surplus Use
+        function cancelSurplusUse() {
+            document.getElementById('surplusConfirmDialog').classList.remove('active');
+            currentOverBudgetCategory = null;
+        }
+
+        // Edit Expense
+        function editExpense(id) {
+            const expense = appData.expenses.find(e => e.id === id);
+            if (!expense) return;
+            
+            editingExpenseId = id;
+            
+            document.getElementById('expenseCategory').value = expense.category;
+            document.getElementById('expenseDescription').value = expense.description;
+            document.getElementById('expenseAmount').value = expense.amount;
+            document.getElementById('expenseDate').value = expense.date;
+            
+            openModal('addExpense');
+            document.querySelector('#addExpenseModal .modal-title').textContent = 'تعديل المصروف';
+        }
+
+        // Delete Expense
+        function deleteExpense(id) {
+            const expense = appData.expenses.find(e => e.id === id);
+            if (!expense) return;
+            
+            if (confirm(`هل أنت متأكد من حذف "${expense.description}"؟`)) {
+                // Update budget spent
+                if (appData.budgets[expense.category]) {
+                    appData.budgets[expense.category].spent -= expense.amount;
+                }
+                
+                // Remove expense
+                appData.expenses = appData.expenses.filter(e => e.id !== id);
+                
+                saveData();
+                updateUI();
+                showNotification('تم حذف المصروف! ❌');
+            }
+        }
+
+        // Calculate Goal Savings
+        function calculateGoalSavings() {
+            const amount = parseFloat(document.getElementById('goalAmount').value) || 0;
+            const months = parseFloat(document.getElementById('goalMonths').value) || 1;
+            
+            if (amount > 0 && months > 0) {
+                const monthlyNeeded = Math.ceil(amount / months);
+                document.getElementById('monthlySavingNeeded').textContent = monthlyNeeded.toLocaleString() + ' دج';
+                document.getElementById('goalCalculation').style.display = 'block';
+            } else {
+                document.getElementById('goalCalculation').style.display = 'none';
+            }
+        }
+
+        // Add Goal
+        function addGoal(e) {
+            e.preventDefault();
+            
+            const amount = parseFloat(document.getElementById('goalAmount').value);
+            const months = parseFloat(document.getElementById('goalMonths').value);
+            
+            const goal = {
+                id: Date.now(),
+                name: document.getElementById('goalName').value,
+                targetAmount: amount,
+                savedAmount: 0,
+                months: months,
+                monthlySaving: Math.ceil(amount / months),
+                createdDate: new Date().toISOString()
+            };
+
+            appData.goals.push(goal);
+            saveData();
+            updateUI();
+            closeModal('addGoal');
+            
+            // Reset form
+            document.getElementById('goalForm').reset();
+            document.getElementById('goalCalculation').style.display = 'none';
+            
+            showNotification('تم إضافة الهدف بنجاح! 🎯');
+        }
+
+        // Delete Goal
+        function deleteGoal(id) {
+            const goal = appData.goals.find(g => g.id === id);
+            if (!goal) return;
+            
+            if (confirm(`هل أنت متأكد من حذف هدف "${goal.name}"؟`)) {
+                appData.goals = appData.goals.filter(g => g.id !== id);
+                saveData();
+                updateUI();
+                showNotification('تم حذف الهدف! ❌');
+            }
+        }
+
+        // Open Add to Goal Modal
+        function openAddToGoal(goalId) {
+            const goal = appData.goals.find(g => g.id === goalId);
+            if (!goal) return;
+            
+            const remaining = goal.targetAmount - goal.savedAmount;
+            
+            document.getElementById('addToGoalId').value = goalId;
+            document.getElementById('addToGoalAmount').max = remaining;
+            document.getElementById('addToGoalAmount').placeholder = `المتبقي: ${remaining.toLocaleString()} دج`;
+            
+            document.getElementById('goalRemainingInfo').innerHTML = `
+                <strong>🎯 ${goal.name}</strong><br>
+                المبلغ المطلوب: ${goal.targetAmount.toLocaleString()} دج<br>
+                المدخر حالياً: ${goal.savedAmount.toLocaleString()} دج<br>
+                المتبقي: ${remaining.toLocaleString()} دج
+            `;
+            
+            openModal('addToGoal');
+        }
+
+        // Add to Goal
+        function addToGoal(e) {
+            e.preventDefault();
+            
+            const goalId = parseInt(document.getElementById('addToGoalId').value);
+            const amount = parseFloat(document.getElementById('addToGoalAmount').value);
+            
+            const goal = appData.goals.find(g => g.id === goalId);
+            if (!goal) return;
+            
+            const remaining = goal.targetAmount - goal.savedAmount;
+            
+            if (amount > remaining) {
+                alert('المبلغ المدخل أكبر من المتبقي للهدف!');
+                return;
+            }
+            
+            // Check if user has enough in remaining balance
+            const totalExpenses = appData.expenses.reduce((sum, exp) => sum + exp.amount, 0);
+            const totalGoalSavings = appData.goals.reduce((sum, g) => sum + g.savedAmount, 0);
+            const totalDebtPayments = appData.debts.reduce((sum, d) => sum + d.paidAmount, 0);
+            const currentRemaining = appData.salary - totalExpenses - totalGoalSavings - totalDebtPayments - appData.totalSavings;
+            
+            if (amount > currentRemaining) {
+                alert(`ليس لديك رصيد كافٍ! المتبقي من راتبك: ${currentRemaining.toLocaleString()} دج`);
+                return;
+            }
+            
+            goal.savedAmount += amount;
+            
+            saveData();
+            updateUI();
+            closeModal('addToGoal');
+            
+            // Reset form
+            document.getElementById('addToGoalForm').reset();
+            
+            if (goal.savedAmount >= goal.targetAmount) {
+                showNotification('🎉 مبروك! أكملت هدفك بالكامل!');
+            } else {
+                showNotification('تم إضافة المبلغ للهدف بنجاح! ✅');
+            }
+        }
+
+        // Add Debt
+        function addDebt(e) {
+            e.preventDefault();
+            
+            const debt = {
+                id: Date.now(),
+                creditor: document.getElementById('debtCreditor').value,
+                totalAmount: parseFloat(document.getElementById('debtAmount').value),
+                paidAmount: 0,
+                notes: document.getElementById('debtNotes').value || '',
+                createdDate: new Date().toISOString()
+            };
+
+            appData.debts.push(debt);
+            saveData();
+            updateUI();
+            closeModal('addDebt');
+            
+            // Reset form
+            document.getElementById('debtForm').reset();
+            
+            showNotification('تم إضافة الدين بنجاح! 💳');
+        }
+
+        // Open Pay Debt Modal
+        function openPayDebt(id) {
+            currentPayingDebtId = id;
+            const debt = appData.debts.find(d => d.id === id);
+            if (!debt) return;
+            
+            const remaining = debt.totalAmount - debt.paidAmount;
+            document.getElementById('payDebtAmount').max = remaining;
+            document.getElementById('payDebtAmount').placeholder = `المتبقي: ${remaining.toLocaleString()} دج`;
+            
+            openModal('payDebt');
+        }
+
+        // Pay Debt
+        function payDebt(e) {
+            e.preventDefault();
+            
+            const debtId = currentPayingDebtId;
+            const payAmount = parseFloat(document.getElementById('payDebtAmount').value);
+            
+            const debt = appData.debts.find(d => d.id === debtId);
+            if (!debt) return;
+            
+            const remaining = debt.totalAmount - debt.paidAmount;
+            
+            if (payAmount > remaining) {
+                alert('المبلغ المدخل أكبر من المتبقي من الدين!');
+                return;
+            }
+            
+            // Check if user has enough in remaining balance
+            const totalExpenses = appData.expenses.reduce((sum, exp) => sum + exp.amount, 0);
+            const totalGoalSavings = appData.goals.reduce((sum, g) => sum + g.savedAmount, 0);
+            const totalDebtPayments = appData.debts.reduce((sum, d) => sum + d.paidAmount, 0);
+            const currentRemaining = appData.salary - totalExpenses - totalGoalSavings - totalDebtPayments - appData.totalSavings;
+            
+            if (payAmount > currentRemaining) {
+                alert(`ليس لديك رصيد كافٍ! المتبقي من راتبك: ${currentRemaining.toLocaleString()} دج`);
+                return;
+            }
+            
+            debt.paidAmount += payAmount;
+            
+            saveData();
+            updateUI();
+            closeModal('payDebt');
+            
+            // Reset form
+            document.getElementById('payDebtForm').reset();
+            
+            if (debt.paidAmount >= debt.totalAmount) {
+                showNotification('🎉 مبروك! تم سداد الدين بالكامل!');
+            } else {
+                showNotification('تم تسجيل الدفعة بنجاح! ✅');
+            }
+        }
+
+        // Delete Debt
+        function deleteDebt(id) {
+            const debt = appData.debts.find(d => d.id === id);
+            if (!debt) return;
+            
+            if (confirm(`هل أنت متأكد من حذف دين "${debt.creditor}"؟`)) {
+                appData.debts = appData.debts.filter(d => d.id !== id);
+                saveData();
+                updateUI();
+                showNotification('تم حذف الدين! ❌');
+            }
+        }
+
+        // Calculate Savings Distribution
+        function calculateSavingsDistribution() {
+            const amount = parseFloat(document.getElementById('savingsAmount').value) || 0;
+            const container = document.getElementById('savingsDistributionContent');
+            
+            if (amount <= 0) {
+                container.innerHTML = '<p style="color: var(--text-muted); font-size: 0.85rem;">أدخل مبلغ الادخار لرؤية التوزيع</p>';
+                return;
+            }
+            
+            let remaining = amount;
+            let distribution = [];
+            
+            // First priority: Goals that need monthly savings
+            appData.goals.forEach(goal => {
+                if (goal.savedAmount < goal.targetAmount && remaining > 0) {
+                    const needed = Math.min(goal.monthlySaving, goal.targetAmount - goal.savedAmount);
+                    const allocated = Math.min(needed, remaining);
+                    
+                    if (allocated > 0) {
+                        distribution.push({
+                            type: 'goal',
+                            name: goal.name,
+                            amount: allocated
+                        });
+                        remaining -= allocated;
+                    }
+                }
+            });
+            
+            // Remaining goes to general savings
+            if (remaining > 0) {
+                distribution.push({
+                    type: 'general',
+                    name: 'ادخار عام',
+                    amount: remaining
+                });
+            }
+            
+            // Display distribution
+            container.innerHTML = distribution.map(item => `
+                <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
+                    <span style="color: var(--text-muted);">${item.type === 'goal' ? '🎯' : '💰'} ${item.name}</span>
+                    <span style="color: var(--accent-emerald); font-weight: 600;">${item.amount.toLocaleString()} دج</span>
+                </div>
+            `).join('');
+        }
+
+        // Add Savings
+        function addSavings(e) {
+            e.preventDefault();
+            
+            const amount = parseFloat(document.getElementById('savingsAmount').value);
+            let remaining = amount;
+            let allocations = [];
+            
+            // Distribute to goals first
+            appData.goals.forEach(goal => {
+                if (goal.savedAmount < goal.targetAmount && remaining > 0) {
+                    const needed = Math.min(goal.monthlySaving, goal.targetAmount - goal.savedAmount);
+                    const allocated = Math.min(needed, remaining);
+                    
+                    if (allocated > 0) {
+                        goal.savedAmount += allocated;
+                        remaining -= allocated;
+                        allocations.push({
+                            type: 'goal',
+                            goalId: goal.id,
+                            goalName: goal.name,
+                            amount: allocated
+                        });
+                    }
+                }
+            });
+            
+            // Add to general savings
+            if (remaining > 0) {
+                appData.totalSavings += remaining;
+                allocations.push({
+                    type: 'general',
+                    amount: remaining
+                });
+            }
+            
+            // Record savings history
+            appData.savingsHistory.push({
+                id: Date.now(),
+                totalAmount: amount,
+                allocations: allocations,
+                date: new Date().toISOString()
+            });
+            
+            saveData();
+            updateUI();
+            closeModal('addSavings');
+            
+            // Reset form
+            document.getElementById('savingsForm').reset();
+            
+            showNotification(`تم إضافة ${amount.toLocaleString()} دج للادخار! 💰`);
+        }
+
+        // Update UI
+        function updateUI() {
+            updateBalance();
+            updateSavingsCard();
+            updateSurplusCard();
+            updateBudgetGrid();
+            updateExpenseList();
+            updateDebtsList();
+            updateGoalsList();
+            updateAchievements();
+        }
+
+        // Update Balance
+        function updateBalance() {
+            const totalExpenses = appData.expenses.reduce((sum, exp) => sum + exp.amount, 0);
+            const totalGoalSavings = appData.goals.reduce((sum, g) => sum + g.savedAmount, 0);
+            const totalDebtPayments = appData.debts.reduce((sum, d) => sum + d.paidAmount, 0);
+            const totalSaved = totalGoalSavings + appData.totalSavings;
+            const remaining = appData.salary - totalExpenses - totalSaved - totalDebtPayments;
+            
+            document.getElementById('remainingBalance').textContent = remaining.toLocaleString() + ' دج';
+            document.getElementById('totalSalary').textContent = appData.salary.toLocaleString() + ' دج';
+        }
+
+        // Update Savings Card
+        function updateSavingsCard() {
+            const card = document.getElementById('savingsCard');
+            const totalGoalSavings = appData.goals.reduce((sum, g) => sum + g.savedAmount, 0);
+            const totalSaved = totalGoalSavings + appData.totalSavings;
+            
+            if (totalSaved === 0 && appData.savingsHistory.length === 0) {
+                card.style.display = 'none';
+                return;
+            }
+            
+            card.style.display = 'block';
+            document.getElementById('totalSavingsAmount').textContent = totalSaved.toLocaleString() + ' دج';
+            
+            const breakdown = document.getElementById('savingsBreakdown');
+            let breakdownHTML = '';
+            
+            // Goal savings
+            appData.goals.forEach(goal => {
+                if (goal.savedAmount > 0) {
+                    breakdownHTML += `
+                        <div class="savings-item">
+                            <span class="savings-label">🎯 ${goal.name}</span>
+                            <span class="savings-value">${goal.savedAmount.toLocaleString()} دج</span>
+                        </div>
+                    `;
+                }
+            });
+            
+            // General savings
+            if (appData.totalSavings > 0) {
+                breakdownHTML += `
+                    <div class="savings-item">
+                        <span class="savings-label">💰 ادخار عام</span>
+                        <span class="savings-value">${appData.totalSavings.toLocaleString()} دج</span>
+                    </div>
+                `;
+            }
+            
+            breakdown.innerHTML = breakdownHTML;
+        }
+
+        // Update Surplus Card
+        function updateSurplusCard() {
+            const card = document.getElementById('surplusCard');
+            
+            // Recalculate surplus
+            calculateSurplusFunds();
+            
+            if (appData.surplusFunds === 0) {
+                card.style.display = 'none';
+                return;
+            }
+            
+            card.style.display = 'block';
+            document.getElementById('surplusFundsAmount').textContent = appData.surplusFunds.toLocaleString() + ' دج';
+        }
+
+        // Update Debts List
+        function updateDebtsList() {
+            const list = document.getElementById('debtsList');
+            
+            if (appData.debts.length === 0) {
+                list.innerHTML = '<div class="empty-state"><div class="empty-icon">💳</div><div class="empty-text">لا توجد ديون مسجلة</div><div class="empty-subtext">الحمد لله! أو يمكنك إضافة دين لتتبعه</div></div>';
+                return;
+            }
+
+            list.innerHTML = appData.debts.map(debt => {
+                const remaining = debt.totalAmount - debt.paidAmount;
+                const progress = debt.totalAmount > 0 ? (debt.paidAmount / debt.totalAmount) * 100 : 0;
+                const statusClass = progress < 30 ? 'status-danger' : progress < 70 ? 'status-warning' : 'status-good';
+                const isPaid = remaining === 0;
+                
+                return `
+                    <div class="debt-card ${isPaid ? '' : ''}" style="${isPaid ? 'opacity: 0.6;' : ''}">
+                        <div class="debt-header">
+                            <div>
+                                <div class="debt-title">${isPaid ? '✅ ' : ''}${debt.creditor}</div>
+                                <div class="debt-creditor">${debt.notes || 'لا توجد ملاحظات'}</div>
+                            </div>
+                            <div style="text-align: left;">
+                                <div class="debt-amount">${remaining.toLocaleString()} دج</div>
+                                <div class="debt-paid">متبقي من ${debt.totalAmount.toLocaleString()} دج</div>
+                            </div>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill ${statusClass}" style="width: ${progress}%"></div>
+                        </div>
+                        <div class="budget-details" style="margin-top: 0.75rem;">
+                            <span>مدفوع: ${debt.paidAmount.toLocaleString()} دج</span>
+                            <span>${Math.round(progress)}% مكتمل</span>
+                        </div>
+                        ${!isPaid ? `
+                        <div class="budget-actions" style="margin-top: 1rem;">
+                            <button class="btn-primary" onclick="openPayDebt(${debt.id})" style="flex: 2; padding: 0.6rem; border-radius: 8px; border: none; cursor: pointer;">
+                                💰 دفع جزء
+                            </button>
+                            <button class="btn-delete" onclick="deleteDebt(${debt.id})">🗑️ حذف</button>
+                        </div>
+                        ` : `
+                        <div class="budget-actions" style="margin-top: 1rem;">
+                            <button class="btn-delete" onclick="deleteDebt(${debt.id})" style="flex: 1;">🗑️ حذف السجل</button>
+                        </div>
+                        `}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Update Budget Grid
+        function updateBudgetGrid() {
+            const grid = document.getElementById('budgetGrid');
+            
+            if (Object.keys(appData.budgets).length === 0) {
+                grid.innerHTML = '<div class="empty-state"><div class="empty-icon">🎯</div><div class="empty-text">لم تقم بتحديد ميزانيات بعد</div><div class="empty-subtext">اضغط على "تحديد ميزانية" لتبدأ</div></div>';
+                return;
+            }
+
+            grid.innerHTML = '';
+
+            Object.entries(appData.budgets).forEach(([category, budget]) => {
+                const percentage = budget.total > 0 ? Math.min((budget.spent / budget.total) * 100, 100) : 0;
+                const isOverBudget = budget.spent > budget.total;
+                const actualPercentage = budget.total > 0 ? (budget.spent / budget.total) * 100 : 0;
+                const statusClass = percentage < 70 ? 'status-good' : percentage < 90 ? 'status-warning' : 'status-danger';
+                
+                const item = document.createElement('div');
+                item.className = 'glass-card budget-item';
+                item.innerHTML = `
+                    <div class="budget-header">
+                        <div class="budget-title">
+                            <span>📊</span>
+                            <span>${category}</span>
+                        </div>
+                        <div class="budget-percentage">${Math.round(actualPercentage)}%</div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill ${statusClass}" style="width: ${percentage}%"></div>
+                    </div>
+                    <div class="budget-details">
+                        <span>صرفت: ${budget.spent.toLocaleString()} دج</span>
+                        <span>من ${budget.total.toLocaleString()} دج</span>
+                    </div>
+                    ${isOverBudget ? `
+                        <div class="budget-warning">
+                            ⚠️ تحذير! تجاوزت الميزانية بمقدار ${(budget.spent - budget.total).toLocaleString()} دج
+                        </div>
+                    ` : ''}
+                    <div class="budget-actions">
+                        <button class="btn-edit" onclick="editBudget('${category}')">✏️ تعديل</button>
+                        <button class="btn-delete" onclick="deleteBudget('${category}')">🗑️ حذف</button>
+                    </div>
+                `;
+                grid.appendChild(item);
+            });
+        }
+
+        // Update Expense List
+        function updateExpenseList() {
+            const list = document.getElementById('expenseList');
+            
+            if (appData.expenses.length === 0) {
+                list.innerHTML = '<div class="empty-state"><div class="empty-icon">💸</div><div class="empty-text">لا توجد مصاريف مسجلة</div><div class="empty-subtext">ابدأ بإضافة أول مصروف</div></div>';
+                return;
+            }
+
+            // Sort by date (newest first)
+            const sortedExpenses = [...appData.expenses].sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            list.innerHTML = sortedExpenses.slice(0, 20).map(expense => `
+                <div class="expense-item">
+                    <div class="expense-info">
+                        <h4>${expense.description}</h4>
+                        <div class="expense-date">${expense.category} • ${new Date(expense.date).toLocaleDateString('ar-DZ')}</div>
+                    </div>
+                    <div style="display: flex; align-items: center;">
+                        <div class="expense-actions">
+                            <button class="icon-btn icon-btn-edit" onclick="editExpense(${expense.id})" title="تعديل">✏️</button>
+                            <button class="icon-btn icon-btn-delete" onclick="deleteExpense(${expense.id})" title="حذف">🗑️</button>
+                        </div>
+                        <div class="expense-amount" style="color: var(--accent-rose);">-${expense.amount.toLocaleString()} دج</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Update Goals List
+        function updateGoalsList() {
+            const list = document.getElementById('goalsList');
+            
+            if (appData.goals.length === 0) {
+                list.innerHTML = '<div class="empty-state"><div class="empty-icon">🏆</div><div class="empty-text">لا توجد أهداف مالية</div><div class="empty-subtext">حدد هدفك الأول الآن</div></div>';
+                return;
+            }
+
+            list.innerHTML = appData.goals.map(goal => {
+                const progress = goal.targetAmount > 0 ? (goal.savedAmount / goal.targetAmount) * 100 : 0;
+                const statusClass = progress < 70 ? 'status-good' : progress < 90 ? 'status-warning' : 'status-danger';
+                const remaining = goal.targetAmount - goal.savedAmount;
+                const isComplete = progress >= 100;
+                
+                return `
+                    <div class="glass-card goal-card" style="${isComplete ? 'opacity: 0.7;' : ''}">
+                        <div class="goal-header">
+                            <div class="goal-info">
+                                <h3>${isComplete ? '✅ ' : ''}${goal.name}</h3>
+                                <div class="goal-target">الهدف: ${goal.targetAmount.toLocaleString()} دج في ${goal.months} شهر</div>
+                            </div>
+                            <div class="goal-stats">
+                                <div class="goal-saved">${goal.savedAmount.toLocaleString()} دج</div>
+                                <div class="goal-remaining">متبقي: ${remaining.toLocaleString()} دج</div>
+                            </div>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill ${statusClass}" style="width: ${Math.min(progress, 100)}%"></div>
+                        </div>
+                        <div class="budget-details">
+                            <span>ادخر شهرياً: ${goal.monthlySaving.toLocaleString()} دج</span>
+                            <span>${Math.round(progress)}% مكتمل</span>
+                        </div>
+                        ${!isComplete ? `
+                        <div class="budget-actions" style="margin-top: 1rem;">
+                            <button class="btn-primary" onclick="openAddToGoal(${goal.id})" style="flex: 2; padding: 0.6rem; border-radius: 8px; border: none; cursor: pointer;">
+                                💰 إضافة جزء
+                            </button>
+                            <button class="btn-delete" onclick="deleteGoal(${goal.id})">🗑️ حذف</button>
+                        </div>
+                        ` : `
+                        <div class="budget-actions" style="margin-top: 1rem;">
+                            <button class="btn-delete" onclick="deleteGoal(${goal.id})" style="flex: 1;">🗑️ حذف السجل</button>
+                        </div>
+                        `}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Update Analytics
+        function updateAnalytics() {
+            // Calculate stats
+            const totalExpenses = appData.expenses.reduce((sum, exp) => sum + exp.amount, 0);
+            const avgDaily = appData.expenses.length > 0 ? totalExpenses / 30 : 0;
+            
+            // Get category breakdown
+            const categoryTotals = {};
+            appData.expenses.forEach(exp => {
+                categoryTotals[exp.category] = (categoryTotals[exp.category] || 0) + exp.amount;
+            });
+            
+            const topCategory = Object.entries(categoryTotals).sort((a, b) => b[1] - a[1])[0];
+
+            const statsGrid = document.getElementById('statsGrid');
+            statsGrid.innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-value" style="color: var(--accent-rose);">${totalExpenses.toLocaleString()}</div>
+                    <div class="stat-label">إجمالي المصاريف (دج)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" style="color: var(--accent-teal);">${appData.expenses.length}</div>
+                    <div class="stat-label">عدد المصاريف</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" style="color: var(--accent-amber);">${Math.round(avgDaily).toLocaleString()}</div>
+                    <div class="stat-label">متوسط يومي (دج)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" style="color: var(--accent-emerald);">${topCategory ? topCategory[0] : 'لا يوجد'}</div>
+                    <div class="stat-label">أكثر فئة صرف</div>
+                </div>
+            `;
+
+            // Update chart
+            updateChart(categoryTotals);
+        }
+
+        // Update Chart
+        let expenseChart = null;
+        function updateChart(categoryTotals) {
+            const ctx = document.getElementById('expenseChart');
+            
+            if (expenseChart) {
+                expenseChart.destroy();
+            }
+
+            const labels = Object.keys(categoryTotals);
+            const data = Object.values(categoryTotals);
+            
+            if (labels.length === 0) {
+                ctx.style.display = 'none';
+                return;
+            }
+            
+            ctx.style.display = 'block';
+
+            expenseChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: [
+                            'rgba(20, 184, 166, 0.8)',
+                            'rgba(16, 185, 129, 0.8)',
+                            'rgba(245, 158, 11, 0.8)',
+                            'rgba(244, 63, 94, 0.8)',
+                            'rgba(59, 130, 246, 0.8)',
+                            'rgba(168, 85, 247, 0.8)',
+                            'rgba(236, 72, 153, 0.8)',
+                            'rgba(34, 197, 94, 0.8)',
+                        ],
+                        borderColor: 'rgba(255, 255, 255, 0.2)',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#f8fafc',
+                                font: {
+                                    family: 'Tajawal',
+                                    size: 12
+                                },
+                                padding: 15
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(15, 24, 33, 0.9)',
+                            titleFont: {
+                                family: 'Tajawal',
+                                size: 14
+                            },
+                            bodyFont: {
+                                family: 'Cairo',
+                                size: 13
+                            },
+                            padding: 12,
+                            cornerRadius: 8,
+                            callbacks: {
+                                label: function(context) {
+                                    return context.parsed.toLocaleString() + ' دج';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Achievements System
+        function checkAchievements() {
+            const achievements = [];
+            
+            // First expense
+            if (appData.expenses.length === 1) {
+                achievements.push({
+                    icon: '🎉',
+                    title: 'البداية الجيدة!',
+                    description: 'سجلت أول مصروف لك'
+                });
+            }
+            
+            // 10 expenses tracked
+            if (appData.expenses.length === 10) {
+                achievements.push({
+                    icon: '📊',
+                    title: 'ملتزم بالتتبع',
+                    description: 'سجلت 10 مصاريف!'
+                });
+            }
+            
+            // Under budget
+            const underBudgetCount = Object.values(appData.budgets).filter(b => {
+                return b.total > 0 && b.spent < b.total * 0.8;
+            }).length;
+            
+            if (underBudgetCount >= 3) {
+                achievements.push({
+                    icon: '🏆',
+                    title: 'مدير مالي محترف',
+                    description: 'التزمت بالميزانية في 3 فئات'
+                });
+            }
+
+            // Show achievements if any
+            if (achievements.length > 0) {
+                setTimeout(() => {
+                    achievements.forEach(ach => showNotification(`${ach.icon} ${ach.title}: ${ach.description}`));
+                }, 500);
+            }
+        }
+
+        // Update Achievements Display
+        function updateAchievements() {
+            const list = document.getElementById('achievementsList');
+            const achievements = [];
+            
+            // Calculate achievements
+            if (appData.expenses.length >= 1) {
+                achievements.push({
+                    icon: '🎉',
+                    title: 'البداية الجيدة!',
+                    description: 'سجلت أول مصروف لك'
+                });
+            }
+            
+            if (appData.expenses.length >= 10) {
+                achievements.push({
+                    icon: '📊',
+                    title: 'ملتزم بالتتبع',
+                    description: `سجلت ${appData.expenses.length} مصروف`
+                });
+            }
+
+            if (Object.keys(appData.budgets).length >= 3) {
+                achievements.push({
+                    icon: '🎯',
+                    title: 'مخطط محترف',
+                    description: 'حددت ميزانيات لـ 3 فئات أو أكثر'
+                });
+            }
+
+            if (appData.goals.length >= 1) {
+                achievements.push({
+                    icon: '🌟',
+                    title: 'صاحب رؤية',
+                    description: 'حددت أهدافك المالية'
+                });
+            }
+
+            const underBudgetCount = Object.values(appData.budgets).filter(b => {
+                return b.total > 0 && (b.spent / b.total) < 0.8;
+            }).length;
+            
+            if (underBudgetCount >= 2) {
+                achievements.push({
+                    icon: '🏆',
+                    title: 'مدير مالي محترف',
+                    description: `التزمت بالميزانية في ${underBudgetCount} فئة`
+                });
+            }
+
+            if (achievements.length === 0) {
+                list.innerHTML = '<div class="empty-state"><div class="empty-icon">🏅</div><div class="empty-text">ابدأ رحلتك لفتح الإنجازات!</div><div class="empty-subtext">سجل مصاريفك والتزم بميزانيتك</div></div>';
+                return;
+            }
+
+            list.innerHTML = achievements.map(ach => `
+                <div class="achievement">
+                    <div class="achievement-icon">${ach.icon}</div>
+                    <div class="achievement-text">
+                        <h4>${ach.title}</h4>
+                        <div class="achievement-desc">${ach.description}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Show Empty State
+        function showEmptyState() {
+            document.getElementById('budgetGrid').innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon">👋</div>
+                    <div class="empty-text">مرحباً بك!</div>
+                    <div class="empty-subtext">ابدأ بتحديد راتبك وميزانياتك الشهرية</div>
+                    <button class="btn btn-primary" onclick="openModal('setBudget')" style="margin-top: 1rem;">ابدأ الآن</button>
+                </div>
+            `;
+        }
+
+        // Notification System
+        function showNotification(message) {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: linear-gradient(135deg, var(--accent-teal), var(--accent-emerald));
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 12px;
+                box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+                z-index: 10000;
+                animation: slideIn 0.3s ease;
+                font-family: 'Tajawal', sans-serif;
+                max-width: 300px;
+            `;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        // Add animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(400px); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(400px); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
