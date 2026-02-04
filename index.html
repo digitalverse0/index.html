@@ -993,6 +993,11 @@
             <div class="savings-breakdown" id="savingsBreakdown">
                 <!-- Savings breakdown will appear here -->
             </div>
+            <div style="margin-top: 1rem; display: flex; gap: 0.75rem; justify-content: center;">
+                <button class="btn-secondary" onclick="openModal('manageSavings')" style="padding: 0.75rem 1.5rem;">
+                    ✏️ إدارة الادخار
+                </button>
+            </div>
         </div>
 
         <!-- Surplus Funds Card -->
@@ -1054,6 +1059,7 @@
             <button class="tab" onclick="switchTab('goals')">الأهداف</button>
             <button class="tab" onclick="switchTab('strategies')">استراتيجيات</button>
             <button class="tab" onclick="switchTab('analytics')">التحليلات</button>
+            <button class="tab" onclick="switchTab('achievements')">الإنجازات</button>
         </div>
 
         <!-- Expenses Tab -->
@@ -1412,6 +1418,66 @@
         </div>
     </div>
 
+    <!-- Manage Savings Modal -->
+    <div id="manageSavingsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">إدارة الادخار العام</h3>
+                <button class="close-modal" onclick="closeModal('manageSavings')">×</button>
+            </div>
+            <div style="margin-bottom: 1.5rem;">
+                <div style="text-align: center; padding: 1.5rem; background: rgba(16,185,129,0.1); border-radius: 16px; margin-bottom: 1.5rem;">
+                    <div style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.5rem;">الرصيد الحالي</div>
+                    <div style="font-size: 2.5rem; font-weight: 900; font-family: 'Cairo', sans-serif; color: var(--accent-emerald);" id="currentSavingsAmount">0 دج</div>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    <button class="btn btn-primary" onclick="openWithdrawSavings()" style="width: 100%; padding: 1rem;">
+                        💸 سحب من الادخار
+                    </button>
+                    <button class="btn-secondary" onclick="editTotalSavings()" style="width: 100%; padding: 1rem;">
+                        ✏️ تعديل المبلغ
+                    </button>
+                    <button class="btn-delete" onclick="resetSavings()" style="width: 100%; padding: 1rem;">
+                        🗑️ إعادة تعيين الادخار
+                    </button>
+                </div>
+
+                <div id="savingsHistorySection" style="margin-top: 2rem;">
+                    <h4 style="font-size: 1rem; margin-bottom: 1rem; color: var(--text-muted);">📜 سجل الادخار:</h4>
+                    <div id="savingsHistoryList" style="display: flex; flex-direction: column; gap: 0.75rem; max-height: 300px; overflow-y: auto;">
+                        <!-- History items will appear here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Withdraw Savings Modal -->
+    <div id="withdrawSavingsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">سحب من الادخار</h3>
+                <button class="close-modal" onclick="closeModal('withdrawSavings')">×</button>
+            </div>
+            <form id="withdrawSavingsForm" onsubmit="withdrawSavings(event)">
+                <div style="background: rgba(16,185,129,0.1); padding: 1rem; border-radius: 12px; margin-bottom: 1.5rem; text-align: center;">
+                    <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">المتاح للسحب</div>
+                    <div style="font-size: 1.8rem; font-weight: 700; color: var(--accent-emerald);" id="availableWithdraw">0 دج</div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">المبلغ المراد سحبه (دج)</label>
+                    <input type="number" class="form-input" id="withdrawAmount" placeholder="10000" min="1" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">السبب (اختياري)</label>
+                    <input type="text" class="form-input" id="withdrawReason" placeholder="مثال: مصروف طارئ">
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">تأكيد السحب</button>
+            </form>
+        </div>
+    </div>
+
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -1580,6 +1646,12 @@
             // If opening savings modal, calculate distribution
             if (modalName === 'addSavings') {
                 calculateSavingsDistribution();
+            }
+            
+            // If opening manage savings modal
+            if (modalName === 'manageSavings') {
+                openManageSavings();
+                return; // Don't call the normal openModal since we're calling it inside openManageSavings
             }
             
             document.getElementById(modalId).classList.add('active');
@@ -2268,6 +2340,149 @@
             document.getElementById('incomeForm').reset();
             
             showNotification(`تمت إضافة ${amount.toLocaleString()} دج من ${source}! 💵`);
+        }
+
+        // Open Manage Savings Modal
+        function openManageSavings() {
+            document.getElementById('currentSavingsAmount').textContent = appData.totalSavings.toLocaleString() + ' دج';
+            
+            // Update history
+            updateSavingsHistory();
+            
+            openModal('manageSavings');
+        }
+
+        // Update Savings History Display
+        function updateSavingsHistory() {
+            const list = document.getElementById('savingsHistoryList');
+            
+            if (!appData.savingsHistory || appData.savingsHistory.length === 0) {
+                list.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--text-muted);">لا يوجد سجل</div>';
+                return;
+            }
+
+            list.innerHTML = appData.savingsHistory.slice().reverse().map(record => {
+                const date = new Date(record.date).toLocaleDateString('ar-DZ');
+                return `
+                    <div style="padding: 0.75rem; background: rgba(255,255,255,0.05); border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <div style="font-size: 0.9rem; font-weight: 600;">${record.totalAmount.toLocaleString()} دج</div>
+                            <div style="font-size: 0.75rem; color: var(--text-muted);">${date}</div>
+                        </div>
+                        <button onclick="deleteSavingsRecord(${record.id})" style="background: rgba(244,63,94,0.2); border: none; color: var(--accent-rose); padding: 0.5rem; border-radius: 6px; cursor: pointer;">
+                            🗑️
+                        </button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Delete Savings Record
+        function deleteSavingsRecord(id) {
+            if (!confirm('هل تريد حذف هذا السجل من الادخار؟')) return;
+            
+            const record = appData.savingsHistory.find(r => r.id === id);
+            if (!record) return;
+            
+            // Remove from history
+            appData.savingsHistory = appData.savingsHistory.filter(r => r.id !== id);
+            
+            // Reverse the allocations
+            record.allocations.forEach(allocation => {
+                if (allocation.type === 'goal') {
+                    const goal = appData.goals.find(g => g.id === allocation.goalId);
+                    if (goal) {
+                        goal.savedAmount -= allocation.amount;
+                    }
+                } else {
+                    appData.totalSavings -= allocation.amount;
+                }
+            });
+            
+            saveData();
+            updateUI();
+            updateSavingsHistory();
+            document.getElementById('currentSavingsAmount').textContent = appData.totalSavings.toLocaleString() + ' دج';
+            
+            showNotification('تم حذف السجل! ❌');
+        }
+
+        // Edit Total Savings
+        function editTotalSavings() {
+            const newAmount = prompt('أدخل المبلغ الجديد للادخار العام:', appData.totalSavings);
+            
+            if (newAmount === null) return;
+            
+            const amount = parseFloat(newAmount);
+            
+            if (isNaN(amount) || amount < 0) {
+                alert('المبلغ غير صحيح!');
+                return;
+            }
+            
+            appData.totalSavings = amount;
+            
+            saveData();
+            updateUI();
+            document.getElementById('currentSavingsAmount').textContent = amount.toLocaleString() + ' دج';
+            
+            showNotification('تم تحديث الادخار! ✅');
+        }
+
+        // Reset Savings
+        function resetSavings() {
+            if (!confirm('⚠️ هل أنت متأكد من إعادة تعيين الادخار العام إلى صفر؟\n\nهذا الإجراء لا يمكن التراجع عنه!')) return;
+            
+            appData.totalSavings = 0;
+            appData.savingsHistory = [];
+            
+            saveData();
+            updateUI();
+            closeModal('manageSavings');
+            
+            showNotification('تم إعادة تعيين الادخار! 🔄');
+        }
+
+        // Open Withdraw Savings
+        function openWithdrawSavings() {
+            if (appData.totalSavings === 0) {
+                alert('لا يوجد مبلغ متاح للسحب من الادخار!');
+                return;
+            }
+            
+            document.getElementById('availableWithdraw').textContent = appData.totalSavings.toLocaleString() + ' دج';
+            document.getElementById('withdrawAmount').max = appData.totalSavings;
+            
+            closeModal('manageSavings');
+            openModal('withdrawSavings');
+        }
+
+        // Withdraw Savings
+        function withdrawSavings(e) {
+            e.preventDefault();
+            
+            const amount = parseFloat(document.getElementById('withdrawAmount').value);
+            const reason = document.getElementById('withdrawReason').value || 'سحب من الادخار';
+            
+            if (amount > appData.totalSavings) {
+                alert('المبلغ المطلوب أكبر من المتاح!');
+                return;
+            }
+            
+            // Deduct from savings
+            appData.totalSavings -= amount;
+            
+            // Add back to additional income so user can spend it
+            appData.additionalIncome += amount;
+            
+            saveData();
+            updateUI();
+            closeModal('withdrawSavings');
+            
+            // Reset form
+            document.getElementById('withdrawSavingsForm').reset();
+            
+            showNotification(`تم سحب ${amount.toLocaleString()} دج من الادخار! 💸`);
         }
 
         // Update Debts List
