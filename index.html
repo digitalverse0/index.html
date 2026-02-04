@@ -997,9 +997,18 @@
 
         <!-- Surplus Funds Card -->
         <div class="surplus-card" id="surplusCard" style="display: none;">
-            <div class="balance-label">المبالغ الفاضلة من الميزانيات</div>
+            <div class="balance-label">المبالغ المتبقية من الميزانيات</div>
             <div class="balance-amount" style="font-size: 2.5rem; background: linear-gradient(135deg, #f59e0b, #fbbf24); -webkit-background-clip: text; -webkit-text-fill-color: transparent;" id="surplusFundsAmount">0 دج</div>
             <div class="balance-subtitle">متاحة لتغطية أي تجاوز في الميزانيات</div>
+        </div>
+
+        <!-- Additional Income Card -->
+        <div class="glass-card" id="additionalIncomeCard" style="display: none; background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(99, 102, 241, 0.15)); border: 1px solid rgba(59, 130, 246, 0.3); margin-bottom: 2rem;">
+            <div style="text-align: center;">
+                <div class="balance-label">الدخل الإضافي</div>
+                <div class="balance-amount" style="font-size: 2rem; background: linear-gradient(135deg, #3b82f6, #6366f1); -webkit-background-clip: text; -webkit-text-fill-color: transparent;" id="additionalIncomeAmount">0 دج</div>
+                <div class="balance-subtitle">من مصادر أخرى غير الراتب</div>
+            </div>
         </div>
 
         <!-- Quick Actions -->
@@ -1011,6 +1020,10 @@
             <button class="action-btn" onclick="openModal('setBudget')">
                 <span class="action-icon">🎯</span>
                 تحديد ميزانية
+            </button>
+            <button class="action-btn" onclick="openModal('addIncome')">
+                <span class="action-icon">💵</span>
+                دخل إضافي
             </button>
             <button class="action-btn" onclick="openModal('addDebt')">
                 <span class="action-icon">💳</span>
@@ -1039,8 +1052,8 @@
             <button class="tab active" onclick="switchTab('expenses')">المصاريف</button>
             <button class="tab" onclick="switchTab('debts')">الديون</button>
             <button class="tab" onclick="switchTab('goals')">الأهداف</button>
+            <button class="tab" onclick="switchTab('strategies')">استراتيجيات</button>
             <button class="tab" onclick="switchTab('analytics')">التحليلات</button>
-            <button class="tab" onclick="switchTab('achievements')">الإنجازات</button>
         </div>
 
         <!-- Expenses Tab -->
@@ -1069,6 +1082,103 @@
                 <h2 style="margin-bottom: 1.5rem; font-size: 1.3rem;">أهدافي المالية</h2>
                 <div id="goalsList">
                     <!-- Goals will be listed here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Strategies Tab -->
+        <div id="strategies" class="tab-content">
+            <div class="glass-card">
+                <h2 style="margin-bottom: 1.5rem; font-size: 1.5rem; text-align: center;">💡 استراتيجيات مالية ذكية</h2>
+                
+                <div style="margin-bottom: 2rem;">
+                    <h3 style="font-size: 1.2rem; margin-bottom: 1rem; color: var(--accent-teal);">📊 قاعدة 50/30/20</h3>
+                    <p style="margin-bottom: 0.75rem; line-height: 1.8;">واحدة من أشهر الاستراتيجيات لتوزيع الراتب:</p>
+                    <ul style="list-style: none; padding: 0;">
+                        <li style="padding: 0.75rem; background: rgba(255,255,255,0.05); border-radius: 12px; margin-bottom: 0.5rem;">
+                            <strong style="color: var(--accent-emerald);">50%</strong> للاحتياجات الأساسية (طعام، إيجار، فواتير، نقل)
+                        </li>
+                        <li style="padding: 0.75rem; background: rgba(255,255,255,0.05); border-radius: 12px; margin-bottom: 0.5rem;">
+                            <strong style="color: var(--accent-amber);">30%</strong> للرغبات والترفيه (مطاعم، سينما، هوايات)
+                        </li>
+                        <li style="padding: 0.75rem; background: rgba(255,255,255,0.05); border-radius: 12px;">
+                            <strong style="color: var(--accent-teal);">20%</strong> للادخار والأهداف المالية
+                        </li>
+                    </ul>
+                </div>
+
+                <div style="margin-bottom: 2rem;">
+                    <h3 style="font-size: 1.2rem; margin-bottom: 1rem; color: var(--accent-emerald);">🎯 نظام الأظرف الستة</h3>
+                    <p style="margin-bottom: 0.75rem; line-height: 1.8;">قسّم راتبك على 6 أقسام رئيسية:</p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+                        <div style="padding: 1rem; background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.3); border-radius: 12px;">
+                            <strong>55% الضروريات</strong><br>
+                            <span style="font-size: 0.85rem; color: var(--text-muted);">إيجار، طعام، فواتير</span>
+                        </div>
+                        <div style="padding: 1rem; background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.3); border-radius: 12px;">
+                            <strong>10% الترفيه</strong><br>
+                            <span style="font-size: 0.85rem; color: var(--text-muted);">مطاعم، رحلات، هوايات</span>
+                        </div>
+                        <div style="padding: 1rem; background: rgba(20,184,166,0.1); border: 1px solid rgba(20,184,166,0.3); border-radius: 12px;">
+                            <strong>10% الادخار طويل الأمد</strong><br>
+                            <span style="font-size: 0.85rem; color: var(--text-muted);">للتقاعد والمستقبل</span>
+                        </div>
+                        <div style="padding: 1rem; background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.3); border-radius: 12px;">
+                            <strong>10% التعليم</strong><br>
+                            <span style="font-size: 0.85rem; color: var(--text-muted);">كتب، دورات، تطوير</span>
+                        </div>
+                        <div style="padding: 1rem; background: rgba(168,85,247,0.1); border: 1px solid rgba(168,85,247,0.3); border-radius: 12px;">
+                            <strong>10% الحرية المالية</strong><br>
+                            <span style="font-size: 0.85rem; color: var(--text-muted);">استثمارات، مشاريع</span>
+                        </div>
+                        <div style="padding: 1rem; background: rgba(236,72,153,0.1); border: 1px solid rgba(236,72,153,0.3); border-radius: 12px;">
+                            <strong>5% العطاء</strong><br>
+                            <span style="font-size: 0.85rem; color: var(--text-muted);">صدقات، هدايا، مساعدات</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 2rem;">
+                    <h3 style="font-size: 1.2rem; margin-bottom: 1rem; color: var(--accent-amber);">⚡ نصائح سريعة للادخار</h3>
+                    <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                        <div style="padding: 1rem; background: rgba(255,255,255,0.05); border-right: 4px solid var(--accent-teal); border-radius: 8px;">
+                            <strong>🔄 قاعدة الـ 24 ساعة:</strong> لا تشتري أي شيء غير ضروري فوراً. انتظر 24 ساعة، وغالباً ستتراجع عن الشراء.
+                        </div>
+                        <div style="padding: 1rem; background: rgba(255,255,255,0.05); border-right: 4px solid var(--accent-emerald); border-radius: 8px;">
+                            <strong>💰 ادخر أولاً:</strong> احفظ نسبة الادخار فور استلام الراتب، لا تنتظر آخر الشهر.
+                        </div>
+                        <div style="padding: 1rem; background: rgba(255,255,255,0.05); border-right: 4px solid var(--accent-amber); border-radius: 8px;">
+                            <strong>📝 تتبع الصغائر:</strong> المصاريف الصغيرة (قهوة، وجبات خفيفة) تتراكم! تابعها.
+                        </div>
+                        <div style="padding: 1rem; background: rgba(255,255,255,0.05); border-right: 4px solid var(--accent-rose); border-radius: 8px;">
+                            <strong>🎯 هدف واضح:</strong> حدد هدفاً محدداً للادخار (سيارة، رحلة، شقة) لتحفيز نفسك.
+                        </div>
+                        <div style="padding: 1rem; background: rgba(255,255,255,0.05); border-right: 4px solid #a855f7; border-radius: 8px;">
+                            <strong>🚫 تجنب الديون:</strong> إلا للضرورة القصوى. الفوائد تأكل أموالك.
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 2rem;">
+                    <h3 style="font-size: 1.2rem; margin-bottom: 1rem; color: var(--accent-rose);">🔥 طريقة تحدي الـ 52 أسبوع</h3>
+                    <p style="margin-bottom: 0.75rem; line-height: 1.8;">طريقة ممتعة للادخار على مدار السنة:</p>
+                    <div style="padding: 1.5rem; background: rgba(244,63,94,0.1); border: 1px solid rgba(244,63,94,0.3); border-radius: 12px;">
+                        <ul style="list-style: none; padding: 0; line-height: 2;">
+                            <li>🗓️ <strong>الأسبوع 1:</strong> ادخر 100 دج</li>
+                            <li>🗓️ <strong>الأسبوع 2:</strong> ادخر 200 دج</li>
+                            <li>🗓️ <strong>الأسبوع 3:</strong> ادخر 300 دج</li>
+                            <li style="margin-top: 0.5rem;">... وهكذا حتى الأسبوع 52</li>
+                            <li style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1);">
+                                <strong style="color: var(--accent-emerald);">النتيجة:</strong> ستدخر <span style="font-size: 1.3rem; color: var(--accent-teal);">137,800 دج</span> في السنة! 🎉
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div style="padding: 1.5rem; background: linear-gradient(135deg, rgba(20,184,166,0.2), rgba(16,185,129,0.1)); border: 1px solid rgba(20,184,166,0.3); border-radius: 16px; text-align: center;">
+                    <p style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 0;">
+                        <strong style="color: var(--accent-teal);">تذكّر:</strong> الثروة لا تُبنى بالدخل الكبير، بل بالإنفاق الذكي والادخار المستمر! 💪✨
+                    </p>
                 </div>
             </div>
         </div>
@@ -1278,6 +1388,30 @@
         </div>
     </div>
 
+    <!-- Add Additional Income Modal -->
+    <div id="addIncomeModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">إضافة دخل إضافي</h3>
+                <button class="close-modal" onclick="closeModal('addIncome')">×</button>
+            </div>
+            <form id="incomeForm" onsubmit="addIncome(event)">
+                <div class="form-group">
+                    <label class="form-label">المصدر</label>
+                    <input type="text" class="form-input" id="incomeSource" placeholder="مثال: عمل إضافي، هدية، مكافأة..." required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">المبلغ (دج)</label>
+                    <input type="number" class="form-input" id="incomeAmount" placeholder="5000" min="1" required>
+                </div>
+                <div style="background: rgba(59, 130, 246, 0.1); padding: 1rem; border-radius: 12px; margin: 1rem 0; font-size: 0.85rem; color: var(--text-muted);">
+                    💡 هذا المبلغ منفصل عن راتبك الشهري ويمكنك استخدامه في أي شيء (مصاريف، ادخار، ديون، أهداف)
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">إضافة الدخل</button>
+            </form>
+        </div>
+    </div>
+
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -1285,13 +1419,14 @@
         // Data Storage
         let appData = {
             salary: 0,
+            additionalIncome: 0, // الدخل الإضافي
             budgets: {},
             expenses: [],
             goals: [],
             debts: [],
             savingsHistory: [],
             totalSavings: 0,
-            surplusFunds: 0, // المبالغ الفاضلة من الميزانيات
+            surplusFunds: 0,
             categoryCounter: 0
         };
 
@@ -1300,6 +1435,16 @@
         let editingExpenseId = null;
         let currentPayingDebtId = null;
         let currentOverBudgetCategory = null;
+
+        // CRITICAL: Calculate accurate remaining balance
+        function calculateRemainingBalance() {
+            const totalIncome = appData.salary + appData.additionalIncome;
+            const totalExpenses = appData.expenses.reduce((sum, exp) => sum + exp.amount, 0);
+            const totalGoalSavings = appData.goals.reduce((sum, g) => sum + g.savedAmount, 0);
+            const totalDebtPayments = appData.debts.reduce((sum, d) => sum + d.paidAmount, 0);
+            
+            return totalIncome - totalExpenses - totalGoalSavings - totalDebtPayments - appData.totalSavings;
+        }
 
         // Load data from localStorage
         function loadData() {
@@ -1512,7 +1657,7 @@
             }
         }
 
-        // Add Expense
+        // Add Expense - WITH BALANCE CHECK
         function addExpense(e) {
             e.preventDefault();
             
@@ -1523,6 +1668,15 @@
                 amount: parseFloat(document.getElementById('expenseAmount').value),
                 date: document.getElementById('expenseDate').value
             };
+
+            // Check if user has enough balance BEFORE adding expense
+            if (!editingExpenseId) {
+                const remaining = calculateRemainingBalance();
+                if (expense.amount > remaining) {
+                    alert(`⚠️ لا يمكنك إضافة هذا المصروف!\n\nالرصيد المتبقي: ${remaining.toLocaleString()} دج\nالمبلغ المطلوب: ${expense.amount.toLocaleString()} دج\n\nليس لديك رصيد كافٍ!`);
+                    return;
+                }
+            }
 
             if (editingExpenseId) {
                 // Update existing expense
@@ -1548,11 +1702,20 @@
                     const budget = appData.budgets[expense.category];
                     budget.spent += expense.amount;
                     
-                    // Check if over budget
-                    if (budget.spent > budget.total && appData.surplusFunds > 0) {
-                        const overAmount = budget.spent - budget.total;
-                        currentOverBudgetCategory = expense.category;
-                        showSurplusConfirmation(expense.category, overAmount);
+                    // Check if over budget AFTER adding expense
+                    if (budget.spent > budget.total) {
+                        // Recalculate surplus first
+                        calculateSurplusFunds();
+                        
+                        if (appData.surplusFunds > 0) {
+                            const overAmount = budget.spent - budget.total;
+                            currentOverBudgetCategory = expense.category;
+                            
+                            // Show confirmation after a short delay to ensure UI updates
+                            setTimeout(() => {
+                                showSurplusConfirmation(expense.category, overAmount);
+                            }, 300);
+                        }
                     }
                 }
                 
@@ -1573,17 +1736,24 @@
             editingExpenseId = null;
         }
 
-        // Calculate Surplus Funds
+        // Calculate Surplus Funds - FIXED
         function calculateSurplusFunds() {
             let totalSurplus = 0;
             
+            // Only count UNSPENT amounts from budgets that have been allocated
             Object.entries(appData.budgets).forEach(([category, budget]) => {
                 if (budget.spent < budget.total) {
-                    totalSurplus += (budget.total - budget.spent);
+                    const unspent = budget.total - budget.spent;
+                    totalSurplus += unspent;
                 }
             });
             
             appData.surplusFunds = totalSurplus;
+            
+            console.log('💵 Surplus Check:', {
+                budgets: appData.budgets,
+                totalSurplus
+            });
         }
 
         // Show Surplus Confirmation Dialog
@@ -1597,24 +1767,28 @@
             dialog.classList.add('active');
         }
 
-        // Confirm Surplus Use
+        // Confirm Surplus Use - FIXED
         function confirmSurplusUse() {
             const category = currentOverBudgetCategory;
             const budget = appData.budgets[category];
             const overAmount = budget.spent - budget.total;
             const toUse = Math.min(appData.surplusFunds, overAmount);
             
-            // Cover the over amount
+            // Increase budget total to cover the overage
             budget.total += toUse;
-            appData.surplusFunds -= toUse;
+            
+            // Recalculate surplus (it will automatically decrease)
+            calculateSurplusFunds();
             
             saveData();
             updateUI();
             
             document.getElementById('surplusConfirmDialog').classList.remove('active');
-            showNotification(`تم تغطية ${toUse.toLocaleString()} دج من المبالغ الفاضلة! ✅`);
+            showNotification(`تم تغطية ${toUse.toLocaleString()} دج من المبالغ المتبقية! ✅`);
             
             currentOverBudgetCategory = null;
+            
+            console.log('✅ Surplus Used:', { category, toUse, newBudgetTotal: budget.total });
         }
 
         // Cancel Surplus Use
@@ -1736,7 +1910,7 @@
             openModal('addToGoal');
         }
 
-        // Add to Goal
+        // Add to Goal - FIXED
         function addToGoal(e) {
             e.preventDefault();
             
@@ -1754,13 +1928,10 @@
             }
             
             // Check if user has enough in remaining balance
-            const totalExpenses = appData.expenses.reduce((sum, exp) => sum + exp.amount, 0);
-            const totalGoalSavings = appData.goals.reduce((sum, g) => sum + g.savedAmount, 0);
-            const totalDebtPayments = appData.debts.reduce((sum, d) => sum + d.paidAmount, 0);
-            const currentRemaining = appData.salary - totalExpenses - totalGoalSavings - totalDebtPayments - appData.totalSavings;
+            const currentRemaining = calculateRemainingBalance();
             
             if (amount > currentRemaining) {
-                alert(`ليس لديك رصيد كافٍ! المتبقي من راتبك: ${currentRemaining.toLocaleString()} دج`);
+                alert(`ليس لديك رصيد كافٍ!\n\nالمتبقي من دخلك: ${currentRemaining.toLocaleString()} دج\nالمبلغ المطلوب: ${amount.toLocaleString()} دج`);
                 return;
             }
             
@@ -1817,7 +1988,7 @@
             openModal('payDebt');
         }
 
-        // Pay Debt
+        // Pay Debt - FIXED
         function payDebt(e) {
             e.preventDefault();
             
@@ -1835,13 +2006,10 @@
             }
             
             // Check if user has enough in remaining balance
-            const totalExpenses = appData.expenses.reduce((sum, exp) => sum + exp.amount, 0);
-            const totalGoalSavings = appData.goals.reduce((sum, g) => sum + g.savedAmount, 0);
-            const totalDebtPayments = appData.debts.reduce((sum, d) => sum + d.paidAmount, 0);
-            const currentRemaining = appData.salary - totalExpenses - totalGoalSavings - totalDebtPayments - appData.totalSavings;
+            const currentRemaining = calculateRemainingBalance();
             
             if (payAmount > currentRemaining) {
-                alert(`ليس لديك رصيد كافٍ! المتبقي من راتبك: ${currentRemaining.toLocaleString()} دج`);
+                alert(`ليس لديك رصيد كافٍ!\n\nالمتبقي من دخلك: ${currentRemaining.toLocaleString()} دج\nالمبلغ المطلوب: ${payAmount.toLocaleString()} دج`);
                 return;
             }
             
@@ -1981,6 +2149,7 @@
             updateBalance();
             updateSavingsCard();
             updateSurplusCard();
+            updateAdditionalIncomeCard();
             updateBudgetGrid();
             updateExpenseList();
             updateDebtsList();
@@ -1988,16 +2157,27 @@
             updateAchievements();
         }
 
-        // Update Balance
+        // Update Balance - FIXED AND ACCURATE
         function updateBalance() {
+            const totalIncome = appData.salary + appData.additionalIncome;
             const totalExpenses = appData.expenses.reduce((sum, exp) => sum + exp.amount, 0);
             const totalGoalSavings = appData.goals.reduce((sum, g) => sum + g.savedAmount, 0);
             const totalDebtPayments = appData.debts.reduce((sum, d) => sum + d.paidAmount, 0);
-            const totalSaved = totalGoalSavings + appData.totalSavings;
-            const remaining = appData.salary - totalExpenses - totalSaved - totalDebtPayments;
+            const remaining = totalIncome - totalExpenses - totalGoalSavings - totalDebtPayments - appData.totalSavings;
             
             document.getElementById('remainingBalance').textContent = remaining.toLocaleString() + ' دج';
             document.getElementById('totalSalary').textContent = appData.salary.toLocaleString() + ' دج';
+            
+            console.log('💰 Balance Check:', {
+                totalIncome,
+                salary: appData.salary,
+                additionalIncome: appData.additionalIncome,
+                totalExpenses,
+                totalGoalSavings,
+                totalDebtPayments,
+                totalSavings: appData.totalSavings,
+                remaining
+            });
         }
 
         // Update Savings Card
@@ -2056,6 +2236,38 @@
             
             card.style.display = 'block';
             document.getElementById('surplusFundsAmount').textContent = appData.surplusFunds.toLocaleString() + ' دج';
+        }
+
+        // Update Additional Income Card
+        function updateAdditionalIncomeCard() {
+            const card = document.getElementById('additionalIncomeCard');
+            
+            if (appData.additionalIncome === 0) {
+                card.style.display = 'none';
+                return;
+            }
+            
+            card.style.display = 'block';
+            document.getElementById('additionalIncomeAmount').textContent = appData.additionalIncome.toLocaleString() + ' دج';
+        }
+
+        // Add Income
+        function addIncome(e) {
+            e.preventDefault();
+            
+            const amount = parseFloat(document.getElementById('incomeAmount').value);
+            const source = document.getElementById('incomeSource').value;
+            
+            appData.additionalIncome += amount;
+            
+            saveData();
+            updateUI();
+            closeModal('addIncome');
+            
+            // Reset form
+            document.getElementById('incomeForm').reset();
+            
+            showNotification(`تمت إضافة ${amount.toLocaleString()} دج من ${source}! 💵`);
         }
 
         // Update Debts List
